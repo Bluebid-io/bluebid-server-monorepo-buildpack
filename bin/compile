@@ -16,9 +16,6 @@ fi
 echo "→ npm install --workspaces"
 npm install --workspaces
 
-echo "→ building core (dependency of your services)"
-npm run -w core build
-
 echo "→ building $SERVICE"
 npm run -w "$SERVICE" build
 
