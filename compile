@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# $1 = build dir
+cd "$1"
+
+# handle nested bluebid-server folder
+[[ ! -d api-server && -d bluebid-server ]] && cd bluebid-server
+
+# require SERVICE env var
+if [[ -z "${SERVICE:-}" ]]; then
+  echo "✖ SERVICE must be set to api-server or jobs-server" >&2
+  exit 1
+fi
+
+echo "→ npm install --workspaces"
+npm install --workspaces
+
+echo "→ building core (dependency of your services)"
+npm run -w core build
+
+echo "→ building $SERVICE"
+npm run -w "$SERVICE" build
+
+echo "→ generating root Procfile from $SERVICE/Procfile"
+rm -f Procfile
+while IFS= read -r line; do
+  name=${line%%:*}
+  cmd=${line#*: }
+  # wrap each command so it runs in the right folder
+  echo "$name: cd $SERVICE && $cmd"
+done < "$SERVICE/Procfile" > Procfile
+
+echo "✔ compile done for $SERVICE"

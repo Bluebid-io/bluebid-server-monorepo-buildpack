@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+# $1 = build dir
+cd "$1"
+
+# if your zip unpacks under bluebid-server/, descend into it
+[[ ! -d api-server && -d bluebid-server ]] && cd bluebid-server
+
+# succeed only if package.json + core + api-server + jobs-server all exist
+if [[ -f package.json && -d core && -d api-server && -d jobs-server ]]; then
+  echo monorepo-node
+  exit 0
+else
+  exit 1
+fi
