@@ -3,8 +3,6 @@ set -e
 
 # $1 = build dir
 cd "$1"
-
-# if your zip unpacks under bluebid-server/, descend into it
 [[ ! -d api-server && -d bluebid-server ]] && cd bluebid-server
 
 # succeed only if package.json + core + api-server + jobs-server all exist
