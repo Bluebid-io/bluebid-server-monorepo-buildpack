@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# $1 = build dir
-cd "$1"
+indent() {
+    sed -u 's/^/      /'
+}
+
+BUILD_DIR="$1"
+CACHE_DIR="$2"
+ENV_DIR="$3"
+
+cd "$BUILD_DIR"
 [[ ! -d api-server && -d bluebid-server ]] && cd bluebid-server
+
+if [ ! -f "${ENV_DIR}/SERVICE" ]; then
+    echo "SERVICE was not set. aborting" | indent
+    exit 1
+fi
+SERVICE="$(cat "${ENV_DIR}/SERVICE")"
 
 # require SERVICE env var
 if [[ -z "${SERVICE:-}" ]]; then
