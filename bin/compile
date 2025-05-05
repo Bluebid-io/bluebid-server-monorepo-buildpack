@@ -17,10 +17,10 @@ npm install
 cd "$SERVICE"
 echo "→ npm install in $SERVICE"
 npm install
+cd ..
 
 echo "→ building $SERVICE"
-npm run build
-cd ..
+npm run build --workspace=$SERVICE
 
 echo "→ copying Procfile from $SERVICE/Procfile to root"
 cp "$SERVICE/Procfile" Procfile
